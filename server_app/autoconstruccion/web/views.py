@@ -278,6 +278,7 @@ def user_account():
 
 @bp.route('skills')
 @login_required
+@is_admin
 def skill_index():
     skills = Skill.query.all()
     return render_template('skills/index.html', skills=skills)
@@ -285,6 +286,7 @@ def skill_index():
 
 @bp.route('skills/add', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def skill_add():
     form = SkillForm(request.form)
     if request.method == 'POST':
@@ -305,6 +307,7 @@ def skill_add():
 
 @bp.route('skills/edit/<int:skill_id>', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def skill_edit(skill_id):
     skill = Skill.query.get(skill_id)
     form = SkillForm(obj=skill)
