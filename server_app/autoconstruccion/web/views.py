@@ -5,6 +5,7 @@ from autoconstruccion.models import Project, db, Event, User, Skill, SkillLevel
 from autoconstruccion.web.forms import ProjectForm, UserForm, EventForm, SkillForm
 from .utils import get_image_from_file_field
 from flask.ext.login import login_required, current_user
+from autoconstruccion.login.auth import is_admin
 
 
 bp = Blueprint('web', __name__,
@@ -26,6 +27,8 @@ def project_index():
 
 
 @bp.route('projects/add', methods=['GET', 'POST'])
+@login_required
+@is_admin
 def project_add():
 
     # Don't pass request.form as flask_wtf do it automatically, and
