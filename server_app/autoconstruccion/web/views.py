@@ -286,3 +286,19 @@ def skill_add():
         flash('Data not valid, please review the fields')
 
     return render_template('skills/add.html', form=form)
+
+
+@bp.route('skills/edit/<int:skill_id>', methods=['GET', 'POST'])
+@login_required
+def skill_edit(skill_id):
+    skill = Skill.query.get(skill_id)
+    form = SkillForm(obj=skill)
+
+    if form.validate_on_submit():
+        form.populate_obj(skill)
+        skill.image = get_image_from_file_field(form.image, request)
+        db.session.commit()
+
+        flash('Skill edited', 'success')
+        return redirect(url_for('web.skill_index'))
+    return render_template('skills/edit.html', form=form, skill_id=skill_id)

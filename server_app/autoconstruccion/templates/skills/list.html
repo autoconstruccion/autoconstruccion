@@ -24,8 +24,7 @@
                             <td>{{ skill.name }}</td>
 
                             <td>
-{#                                <a href="{{ url_for('web.skill_edit', skill_id=skill.id) }}">Edit <i class="fa fa-edit"></i></a>#}
-{#                                <a href="{{ url_for('web.skill_view', skill_id=skill.id) }}">View <i class="fa fa-eye"></i></a>#}
+                                <a href="{{ url_for('web.skill_edit', skill_id=skill.id) }}">Edit <i class="fa fa-edit"></i></a>
                             </td>
                         </tr>
                        {% endfor %}
