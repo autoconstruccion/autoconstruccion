@@ -5,6 +5,7 @@ from autoconstruccion.models import Project, db, Event, User, Skill, SkillLevel
 from autoconstruccion.web.forms import ProjectForm, UserForm, EventForm, SkillForm
 from .utils import get_image_from_file_field
 from flask.ext.login import login_required, current_user
+from autoconstruccion.login.auth import is_admin
 
 
 bp = Blueprint('web', __name__,
@@ -26,6 +27,8 @@ def project_index():
 
 
 @bp.route('projects/add', methods=['GET', 'POST'])
+@login_required
+@is_admin
 def project_add():
 
     # Don't pass request.form as flask_wtf do it automatically, and
@@ -52,6 +55,7 @@ def project_view(project_id):
 
 @bp.route('projects/edit/<int:project_id>', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def project_edit(project_id):
     project = Project.query.get(project_id)
     form = ProjectForm(obj=project)
@@ -102,6 +106,7 @@ def get_project_image(project_id):
 
 @bp.route('projects/<int:project_id>/events/add', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def event_add(project_id):
     form = EventForm(request.form)
     if request.method == 'POST':
@@ -122,6 +127,7 @@ def event_add(project_id):
 
 @bp.route('projects/<int:project_id>/events/<int:event_id>/edit', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def event_edit(project_id, event_id):
     event = Event.query.get(event_id)
 
@@ -159,15 +165,16 @@ def event_join(project_id, event_id):
 
 @bp.route('projects/<int:project_id>/events/<int:event_id>/volunteers', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def event_volunteers(project_id, event_id):
     event = Event.query.get(event_id)
 
     return render_template('events/volunteers.html', users=event.users)
 
 
-
 @bp.route('projects/<int:project_id>/events/<int:event_id>/reminder', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def event_reminder(project_id, event_id):
     event = Event.query.get(event_id)
 
@@ -189,12 +196,16 @@ def project_events(project_id):
 
 
 @bp.route('projects/<int:project_id>/volunteers', methods=['GET'])
+@login_required
+@is_admin
 def project_volunteers(project_id):
     project = Project.query.get(project_id)
     return render_template('projects/volunteers.html', project_id=project_id, users=project.users)
 
 
 @bp.route('users', methods=['GET', 'POST'])
+@login_required
+@is_admin
 def user_index():
     users = User.query.all()
     return render_template('users/index.html', users=users)
@@ -202,6 +213,7 @@ def user_index():
 
 @bp.route('users/add', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def user_add():
     form = UserForm(request.form)
     if request.method == 'POST':
@@ -222,12 +234,15 @@ def user_add():
 
 @bp.route('users/<int:user_id>', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def user_edit(user_id):
     user = User.query.get(user_id)
     form = UserForm(request.form, user)
     if request.method == 'POST':
         if form.validate():
             form.populate_obj(user)
+            if current_user.is_admin():
+                user._is_admin = form.is_admin.data
             user.store_password_hashed(form.password.data)
             db.session.commit()
 
@@ -263,6 +278,7 @@ def user_account():
 
 @bp.route('skills')
 @login_required
+@is_admin
 def skill_index():
     skills = Skill.query.all()
     return render_template('skills/index.html', skills=skills)
@@ -270,6 +286,7 @@ def skill_index():
 
 @bp.route('skills/add', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def skill_add():
     form = SkillForm(request.form)
     if request.method == 'POST':
@@ -290,6 +307,7 @@ def skill_add():
 
 @bp.route('skills/edit/<int:skill_id>', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def skill_edit(skill_id):
     skill = Skill.query.get(skill_id)
     form = SkillForm(obj=skill)

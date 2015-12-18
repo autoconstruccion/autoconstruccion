@@ -1,5 +1,4 @@
 import pytest
-from autoconstruccion.web.forms import ProjectForm, UserForm, SkillForm
 
 
 ############################################################
@@ -9,10 +8,11 @@ from autoconstruccion.web.forms import ProjectForm, UserForm, SkillForm
 
 # creates a fixture that returns a valid form
 @pytest.fixture()
-def project_form():
+def project_form(request_ctx):
     """
     Returns a Project Form with valid data populated.
     """
+    from autoconstruccion.web.forms import ProjectForm
     values = {'name': "Proyecto de testing",
               'description': "Este es un proyecto de prueba para test",
               'start_date': "24-01-2015",
@@ -30,6 +30,7 @@ def test_get_valid_project_form(project_form):
 
 
 def test_should_throw_exception_when_is_empty(project_form):
+    from autoconstruccion.web.forms import ProjectForm
     fixture = {}
     project = ProjectForm(data=fixture)
     assert not project.validate()
@@ -115,10 +116,11 @@ def test_should_accept_jpg_images(project_form):
 
 # creates a fixture that returns a valid form
 @pytest.fixture()
-def user_form():
+def user_form(request_ctx):
     """
     Returns a Project Form with valid data populated.
     """
+    from autoconstruccion.web.forms import UserForm
     values = {'full_name': "Pepe Pérez Mengano",
               'email': "pepe.perez@fulano.es",
               'password': "123456",
@@ -200,10 +202,11 @@ if __name__ == '__main__':
 
 # creates a fixture that returns a valid form
 @pytest.fixture()
-def skill_form():
+def skill_form(client):
     """
     Returns a Project Form with valid data populated.
     """
+    from autoconstruccion.web.forms import SkillForm
     values = {'name': "Cocinar",
               'description': "Saber cocinar",
               'image': None,

@@ -39,9 +39,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        login_user(user)
         flash('User registered successfully.', 'success')
-
         # redirect to user data fill....
         return redirect(url_for('web.index'))
 

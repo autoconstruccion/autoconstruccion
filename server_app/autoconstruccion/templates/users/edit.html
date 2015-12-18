@@ -19,7 +19,9 @@
 
             {{ render_field( form.phone_number  ) }}
 
-            {{ render_field( form.is_admin ) }}
+            {% if current_user.is_admin() %}
+                {{ render_field( form.is_admin ) }}
+            {% endif %}
 
             {{ render_field( form.abilities  ) }}
 
