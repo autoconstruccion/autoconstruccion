@@ -23,6 +23,8 @@ class Development(BaseConfig):
 class Testing(BaseConfig):
     DEBUG = True
     TESTING = True
+    WTF_CSRF_ENABLED = False
+    CSRF_ENABLED = False
 
 
 class TestingMemory(Testing):
