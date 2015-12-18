@@ -55,6 +55,7 @@ def project_view(project_id):
 
 @bp.route('projects/edit/<int:project_id>', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def project_edit(project_id):
     project = Project.query.get(project_id)
     form = ProjectForm(obj=project)
@@ -105,6 +106,7 @@ def get_project_image(project_id):
 
 @bp.route('projects/<int:project_id>/events/add', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def event_add(project_id):
     form = EventForm(request.form)
     if request.method == 'POST':
@@ -125,6 +127,7 @@ def event_add(project_id):
 
 @bp.route('projects/<int:project_id>/events/<int:event_id>/edit', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def event_edit(project_id, event_id):
     event = Event.query.get(event_id)
 
@@ -162,15 +165,16 @@ def event_join(project_id, event_id):
 
 @bp.route('projects/<int:project_id>/events/<int:event_id>/volunteers', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def event_volunteers(project_id, event_id):
     event = Event.query.get(event_id)
 
     return render_template('events/volunteers.html', users=event.users)
 
 
-
 @bp.route('projects/<int:project_id>/events/<int:event_id>/reminder', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def event_reminder(project_id, event_id):
     event = Event.query.get(event_id)
 
@@ -192,12 +196,16 @@ def project_events(project_id):
 
 
 @bp.route('projects/<int:project_id>/volunteers', methods=['GET'])
+@login_required
+@is_admin
 def project_volunteers(project_id):
     project = Project.query.get(project_id)
     return render_template('projects/volunteers.html', project_id=project_id, users=project.users)
 
 
 @bp.route('users', methods=['GET', 'POST'])
+@login_required
+@is_admin
 def user_index():
     users = User.query.all()
     return render_template('users/index.html', users=users)
@@ -205,6 +213,7 @@ def user_index():
 
 @bp.route('users/add', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def user_add():
     form = UserForm(request.form)
     if request.method == 'POST':
@@ -225,11 +234,8 @@ def user_add():
 
 @bp.route('users/<int:user_id>', methods=['GET', 'POST'])
 @login_required
+@is_admin
 def user_edit(user_id):
-    # if is not current user or admin -> error
-    if user_id != current_user.id or not current_user.is_admin():
-        abort(403)
-
     user = User.query.get(user_id)
     form = UserForm(request.form, user)
     if request.method == 'POST':
