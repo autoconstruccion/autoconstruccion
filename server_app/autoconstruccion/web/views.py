@@ -261,6 +261,13 @@ def user_account():
     return render_template('users/account.html', form=form, user_id=user_id)
 
 
+@bp.route('skills')
+@login_required
+def skill_index():
+    skills = Skill.query.all()
+    return render_template('skills/index.html', skills=skills)
+
+
 @bp.route('skills/add', methods=['GET', 'POST'])
 @login_required
 def skill_add():
