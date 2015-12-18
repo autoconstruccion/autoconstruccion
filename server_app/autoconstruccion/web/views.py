@@ -223,11 +223,17 @@ def user_add():
 @bp.route('users/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 def user_edit(user_id):
+    # if is not current user or admin -> error
+    if user_id != current_user.id or not current_user.is_admin():
+        abort(403)
+
     user = User.query.get(user_id)
     form = UserForm(request.form, user)
     if request.method == 'POST':
         if form.validate():
             form.populate_obj(user)
+            if current_user.is_admin():
+                user._is_admin = form.is_admin.data
             user.store_password_hashed(form.password.data)
             db.session.commit()
 
