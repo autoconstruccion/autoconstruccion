@@ -2,7 +2,7 @@ from io import BytesIO
 from flask import Blueprint, current_app
 from flask import flash, send_file, render_template, request, redirect, url_for, abort
 from autoconstruccion.models import Project, db, Event, User, Skill, SkillLevel
-from autoconstruccion.web.forms import ProjectForm, UserForm, EventForm
+from autoconstruccion.web.forms import ProjectForm, UserForm, EventForm, SkillForm
 from .utils import get_image_from_file_field
 from flask.ext.login import login_required, current_user
 
@@ -26,7 +26,6 @@ def project_index():
 
 
 @bp.route('projects/add', methods=['GET', 'POST'])
-@login_required
 def project_add():
 
     # Don't pass request.form as flask_wtf do it automatically, and
@@ -260,3 +259,46 @@ def user_account():
         flash('Data not valid, please review the fields')
 
     return render_template('users/account.html', form=form, user_id=user_id)
+
+
+@bp.route('skills')
+@login_required
+def skill_index():
+    skills = Skill.query.all()
+    return render_template('skills/index.html', skills=skills)
+
+
+@bp.route('skills/add', methods=['GET', 'POST'])
+@login_required
+def skill_add():
+    form = SkillForm(request.form)
+    if request.method == 'POST':
+        if form.validate():
+            skill = Skill()
+            form.populate_obj(skill)
+            skill.image = get_image_from_file_field(form.image, request)
+            db.session.add(skill)
+            db.session.commit()
+
+            flash('Skill saved successfully', 'success')
+            return redirect(url_for('web.skill_add'))
+
+        flash('Data not valid, please review the fields')
+
+    return render_template('skills/add.html', form=form)
+
+
+@bp.route('skills/edit/<int:skill_id>', methods=['GET', 'POST'])
+@login_required
+def skill_edit(skill_id):
+    skill = Skill.query.get(skill_id)
+    form = SkillForm(obj=skill)
+
+    if form.validate_on_submit():
+        form.populate_obj(skill)
+        skill.image = get_image_from_file_field(form.image, request)
+        db.session.commit()
+
+        flash('Skill edited', 'success')
+        return redirect(url_for('web.skill_index'))
+    return render_template('skills/edit.html', form=form, skill_id=skill_id)

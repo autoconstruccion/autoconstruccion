@@ -1,0 +1,36 @@
+
+    <div id="page-wrapper">
+
+		<h2>Skills list</h2>
+
+
+        <div class="row">
+        <div class="panel panel-primary filterable">
+            <div class="panel-heading">
+                <h3 class="panel-title">Skills</h3>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr class="">
+                        <th> ID </th>
+                        <th> Name</th>
+                        <th> Actions </th>
+                    </tr>
+                </thead>
+                <tbody>
+                        {% for skill in skills %}
+                        <tr>
+                            <td>{{ skill.id }}</td>
+                            <td>{{ skill.name }}</td>
+
+                            <td>
+                                <a href="{{ url_for('web.skill_edit', skill_id=skill.id) }}">Edit <i class="fa fa-edit"></i></a>
+                            </td>
+                        </tr>
+                       {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="{{ url_for('web.skill_add') }}" class="btn btn-primary pull-right">Add new skill</a>
+    </div>
