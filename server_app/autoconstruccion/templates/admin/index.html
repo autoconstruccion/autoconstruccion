@@ -15,7 +15,7 @@
 		 {% for project in projects %}    
 		 	<div class="row">
 				<div class="col-md-3">
-					<a href="{{ url_for('web.project_edit', project_id=project.id) }}">
+                    <a href="{{ url_for('web.project_view', project_id=project.id) }}" target="_blank">
 			        <div class="panel panel-primary panel-project">	        	
 			            <div class="panel-heading" style="background-image:url({{url_for('static', filename='img/FOTO1.png')}})">			                
 			            </div>	            
@@ -33,7 +33,6 @@
 	</div>
 
 
-    	(Dejo este boton mientras para poder acceder al listado anterior)<br/>
 		<a href="{{ url_for('web.project_index') }}" class="btn btn-primary ">Proyectos</a>
 		<!--<a href="{{ url_for('web.user_index') }}" class="btn btn-primary ">Usuarios</a> -->
 
